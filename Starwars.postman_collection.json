@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "89b1d869-8fec-4b45-aada-153dae5124d1",
+		"name": "Starwars",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18663317"
+	},
+	"item": [
+		{
+			"name": "people",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const dataFromJson = pm.response.json();\r",
+							"pm.test(\"Статус ответа 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Ответ пришел быстрее 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"pm.test(\"Год рождения соответствует 57BBY\", () => {\r",
+							"    pm.expect(dataFromJson.birth_year).to.eql('57BBY');\r",
+							"});\r",
+							"pm.test(\"Цифровые поля в формате строк\", () => {\r",
+							"    pm.expect(dataFromJson.height).to.be.a('string');\r",
+							"    pm.expect(dataFromJson.mass).to.be.a('string');\r",
+							"});\r",
+							"pm.test(\"Длина поля \\\"год\\\" - 5 символов\", () => {\r",
+							"    pm.expect(dataFromJson.birth_year).to.have.lengthOf(5);\r",
+							"});\r",
+							"pm.test(\"Имя субьекта Obi-Wan Kenobi или Endor\", () => {\r",
+							"    pm.expect(dataFromJson.name).to.be.oneOf([\"Obi-Wan Kenobi\", \"Endor\"]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "javascript"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}api/people/10/",
+					"host": [
+						"{{host}}api"
+					],
+					"path": [
+						"people",
+						"10",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "planets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Статус ответа 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Ответ пришел быстрее 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"const dataFromJson = pm.response.json();\r",
+							"pm.test(\"Дата создания сущности 10 декабря 2014 года\", () => {\r",
+							"    pm.expect(dataFromJson.created).to.include(['2014-12-10']);\r",
+							"});\r",
+							"pm.test(\"Цифровые поля в формате строк\", () => {\r",
+							"    pm.expect(dataFromJson.rotation_period).to.be.a('string');\r",
+							"    pm.expect(dataFromJson.orbital_period).to.be.a('string');\r",
+							"    pm.expect(dataFromJson.diameter).to.be.a('string');\r",
+							"    pm.expect(dataFromJson.surface_water).to.be.a('string');\r",
+							"    pm.expect(dataFromJson.population).to.be.a('string');\r",
+							"});\r",
+							"pm.test(\"Значение поля climate - temperate\", () => {\r",
+							"    pm.expect(dataFromJson.climate).to.eql('temperate');\r",
+							"});\r",
+							"pm.test(\"Имя субьекта Obi-Wan Kenobi или Endor\", () => {\r",
+							"    pm.expect(dataFromJson.name).to.be.oneOf([\"Obi-Wan Kenobi\", \"Endor\"]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}api/planets/7/",
+					"host": [
+						"{{host}}api"
+					],
+					"path": [
+						"planets",
+						"7",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "starships",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Статус ответа 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Ответ пришел быстрее 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"const dataFromJson = pm.response.json();\r",
+							"pm.test(\"Дата создания сущности 10 декабря 2014 года\", () => {\r",
+							"    pm.expect(dataFromJson.created).to.include(['2014-12-10']);\r",
+							"});\r",
+							"pm.test(\"Пилотов на корабле нет\", () => {\r",
+							"    pm.expect(dataFromJson.pilots).to.eql([]);\r",
+							"});\r",
+							"pm.test(\"Корабль стоит 240 000 кредитов\", () => {\r",
+							"    pm.expect(dataFromJson.cost_in_credits).to.eql('240000');\r",
+							"});\r",
+							"pm.test(\"Имя субьекта НЕ Obi-Wan Kenobi или Endor\", () => {\r",
+							"    pm.expect(dataFromJson.name).not.to.be.oneOf([\"Obi-Wan Kenobi\", \"Endor\"]);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}api/starships/5/",
+					"host": [
+						"{{host}}api"
+					],
+					"path": [
+						"starships",
+						"5",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "https://swapi.py4e.com/"
+		}
+	]
+}

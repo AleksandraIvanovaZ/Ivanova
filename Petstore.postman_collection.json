@@ -1,0 +1,773 @@
+{
+	"info": {
+		"_postman_id": "8ac20b04-e347-4776-8617-29ffb6a2e94e",
+		"name": "Petstore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18663317"
+	},
+	"item": [
+		{
+			"name": "Pet",
+			"item": [
+				{
+					"name": "Create Pet (automated)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set('currentPetId', data.id);\r",
+									"\r",
+									"// Позитивные сценарии\r",
+									"// Проверяем, что при создании пришел ответ 200\r",
+									"pm.test(\"Пришел ответ 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что айди соответствует значению в переменной\r",
+									"pm.test(\"ID корректный\", function() {\r",
+									"    pm.expect(pm.response.json().id).to.eql(pm.variables.get(\"currentPetId\"));\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что в респонсе корректная категория\r",
+									"pm.test(\"Категория корректная\", function() {\r",
+									"    pm.expect(pm.response.json().category.id).to.eql(1);\r",
+									"    pm.expect(pm.response.json().category.name).to.eql(\"Котищи - мягкие лапищи\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем поле Name\r",
+									"pm.test(\"Имя корректное\", function() {\r",
+									"    pm.expect(pm.response.json().name).to.eql(\"Соляра\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем урл фото\r",
+									"pm.test(\"URL корректный\", function() {\r",
+									"    pm.expect(pm.response.json().photoUrls).to.eql([\"https://w-dog.ru/wallpapers/2/8/561249212293192/chernaya-mordochka-lyubopytnogo-kotika.jpg\"]);\r",
+									"});\r",
+									"\r",
+									"// Проверяем ID и содержимое тега\r",
+									"pm.test(\"Значения тегов корректные\", function() {\r",
+									"    pm.expect(pm.response.json().tags[0].id).to.eql(1);\r",
+									"    pm.expect(pm.response.json().tags[0].name).to.eql(\"черный\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем статус\r",
+									"pm.test(\"Статус корректный\", function() {\r",
+									"    pm.expect(pm.response.json().status).to.eql(\"available\");\r",
+									"});\r",
+									"\r",
+									"// Негативные сценарии\r",
+									"// Проверяем, что имя короче 255 символов\r",
+									"pm.test(\"Имя короче 255 символов\", function() {\r",
+									"    pm.expect(pm.response.json().name.length).to.be.below(255);\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что статус созданного пета не pending и не sold\r",
+									"pm.test(\"Статус не pending и не sold\", function() {\r",
+									"    pm.expect(pm.response.json().status).not.to.be.eql(\"pending\");\r",
+									"    pm.expect(pm.response.json().status).not.to.be.eql(\"sold\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что созданный пет не принадлежит этой категории\r",
+									"pm.test(\"Категория не 999\", function() {\r",
+									"    pm.expect(pm.response.json().category.id).not.to.be.eql(999);\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что поле ID заполнилось\r",
+									"pm.test(\"Поле ID заполнилось\", function() {\r",
+									"    pm.expect(pm.response.json().id).not.to.be.undefined;\r",
+									"});\r",
+									"\r",
+									"// Проверяем типы данных в полях\r",
+									"pm.test(\"Проверка на некорректные типы данных\", function() {\r",
+									"    pm.expect(pm.response.json().id).not.to.be.an('array');\r",
+									"    pm.expect(pm.response.json().name).not.to.be.a('number');\r",
+									"    pm.expect(pm.response.json().photoUrls).not.to.be.an('string');\r",
+									"});\r",
+									"\r",
+									"// Проверяем корректные значения в категории\r",
+									"pm.test(\"Проверка на некорректные значения в категории\", function() {\r",
+									"    pm.expect(pm.response.json().category.id).not.to.be.within(10, 20);\r",
+									"    pm.expect(pm.response.json().category.name).not.to.be.oneOf([\"Котищи - лысые лапищи\", \"Кошкин дом\"]);\r",
+									"});\r",
+									"\r",
+									"// Проверяем корректные значения в тегах\r",
+									"pm.test(\"Проверка на некорректные значения в тегах\", function() {\r",
+									"    pm.expect(pm.response.json().tags[0].id).not.to.be.above(5);\r",
+									"    pm.expect(pm.response.json().tags[0].name).not.to.have.lengthOf(7);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{randomNumber}},\r\n  \"category\": {\r\n    \"id\": 1,\r\n    \"name\": \"Котищи - мягкие лапищи\"\r\n  },\r\n  \"name\": \"Соляра\",\r\n  \"photoUrls\": [\r\n    \"https://w-dog.ru/wallpapers/2/8/561249212293192/chernaya-mordochka-lyubopytnogo-kotika.jpg\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"черный\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}"
+						},
+						"url": {
+							"raw": "{{petstoreurl}}pet/",
+							"host": [
+								"{{petstoreurl}}pet"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Image",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "petId",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "53.jpg"
+								},
+								{
+									"key": "additionalMetadata",
+									"value": "пщпщ",
+									"type": "text"
+								},
+								{
+									"key": "id",
+									"value": "{{currentPetId}}",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{petstoreurl}}pet/{{currentPetId}}/uploadImage",
+							"host": [
+								"{{petstoreurl}}pet"
+							],
+							"path": [
+								"{{currentPetId}}",
+								"uploadImage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sold Pets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const dataFromJson = pm.response.json();\r",
+									"pm.test(\"Статус ответа 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status=sold",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"findByStatus"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "sold"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{petstoreurl}}pet/{{currentId}}",
+							"host": [
+								"{{petstoreurl}}pet"
+							],
+							"path": [
+								"{{currentId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.collectionVariables.set('randomNumber', Math.floor(Math.random() * 9007199254740991));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Store",
+			"item": [
+				{
+					"name": "Create Order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let startDate = new Date(); // начальная текущая дата\r",
+									"let endDate = new Date(2030, 0, 1); // текущая дата\r",
+									"let randomDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime())); // случайная дата между начальной и конечной\r",
+									"pm.variables.set('randomDate', randomDate.toISOString().substring(0, 10)); // сохраняем дату в переменную"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var order = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set('currentOrderId', order.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"{{randomOrderId}}\",\r\n  \"petId\": \"{{currentPetId}}\",\r\n  \"quantity\": 1,\r\n  \"shipDate\": \"{{randomDate}}\",\r\n  \"status\": \"placed\",\r\n  \"complete\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{petstoreurl}}store/order",
+							"host": [
+								"{{petstoreurl}}store"
+							],
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete This Order (Automated)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Позитивные сценарии\r",
+									"// Проверяем, что при создании пришел ответ 200\r",
+									"pm.test(\"Пришел ответ 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что в ответе пришли поля code, type, message\r",
+									"pm.test(\"В ответе пришли поля code, type, message\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property(\"code\");\r",
+									"    pm.expect(pm.response.json()).to.have.property(\"type\");\r",
+									"    pm.expect(pm.response.json()).to.have.property(\"message\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем типы данных\r",
+									"pm.test(\"Типы данных корректные\", function() {\r",
+									"    pm.expect(pm.response.json().code).to.be.a(\"number\");\r",
+									"    pm.expect(pm.response.json().type).to.be.a(\"string\");\r",
+									"    pm.expect(pm.response.json().message).to.be.a(\"string\");\r",
+									"});\r",
+									"\r",
+									"// Негативные сценарии\r",
+									"// Проверяем, что статус не 400, не 404, не 500\r",
+									"pm.test(\"Статус не 404, не 400, не 500\", function () {\r",
+									"    pm.expect(pm.response.json().code).not.oneOf([400, 404, 500]);\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что в ответе нет поля status (аналогичные проверки могут быть на любое поле из)\r",
+									"pm.test(\"В ответе нет поля status\", function () {\r",
+									"    pm.expect(pm.response.json()).to.not.have.property(\"status\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что формат поля message - не number\r",
+									"pm.test(\"Поле message - не number\", function () {\r",
+									"    pm.expect(pm.response.json().message).not.to.be.a(\"number\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что поля ответа непустые\r",
+									"pm.test(\"Поля не пустые и не отдают NULL\", function () {\r",
+									"    pm.expect(pm.response.json().message).not.to.eql(\"\", null);\r",
+									"    pm.expect(pm.response.json().code).not.to.eql(\"\", null);\r",
+									"    pm.expect(pm.response.json().type).not.to.eql(\"\", null);\r",
+									"    \r",
+									"});\r",
+									"\r",
+									"// Првоеряем, что ответ в поле message не содержит неожиланных данных\r",
+									"pm.test(\"В message не содержится не ожидаемый текст\", function () {\r",
+									"    pm.expect(pm.response.json().message).not.to.eql(\"user not logged in\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{petstoreurl}}store/order/{{currentOrderId}}",
+							"host": [
+								"{{petstoreurl}}store"
+							],
+							"path": [
+								"order",
+								"{{currentOrderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete This Order Again (Automated)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Этим запросом мы проверяем, что невозможно удалить повторно один и тот же Order\r",
+									"\r",
+									"// Позитивные сценарии\r",
+									"// Проверяем, что при создании пришел ответ 404\r",
+									"pm.test(\"Пришел ответ 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что в ответе пришли поля code, type, message\r",
+									"pm.test(\"В ответе пришли поля code, type, message\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property(\"code\");\r",
+									"    pm.expect(pm.response.json()).to.have.property(\"type\");\r",
+									"    pm.expect(pm.response.json()).to.have.property(\"message\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем типы данных\r",
+									"pm.test(\"Типы данных корректные\", function() {\r",
+									"    pm.expect(pm.response.json().code).to.be.a(\"number\");\r",
+									"    pm.expect(pm.response.json().type).to.be.a(\"string\");\r",
+									"    pm.expect(pm.response.json().message).to.be.a(\"string\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что поле message содержит Order Not Found\r",
+									"pm.test(\"Поле message содержит Order Not Found\", function() {\r",
+									"    pm.expect(pm.response.json().message).to.eql(\"Order Not Found\");\r",
+									"});\r",
+									"\r",
+									"// Негативные сценарии\r",
+									"// Проверяем, что статус не 400, не 200, не 500\r",
+									"pm.test(\"Статус не 200, не 400, не 500\", function () {\r",
+									"    pm.expect(pm.response.json().code).not.oneOf([400, 200, 500]);\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что в ответе нет поля status (аналогичные проверки могут быть на любое поле из)\r",
+									"pm.test(\"В ответе нет поля status\", function () {\r",
+									"    pm.expect(pm.response.json()).to.not.have.property(\"status\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что формат поля message - не number\r",
+									"pm.test(\"Поле message - не number\", function () {\r",
+									"    pm.expect(pm.response.json().message).not.to.be.a(\"number\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что поля ответа непустые\r",
+									"pm.test(\"Поля не пустые и не отдают NULL\", function () {\r",
+									"    pm.expect(pm.response.json().message).not.to.eql(\"\", null);\r",
+									"    pm.expect(pm.response.json().code).not.to.eql(\"\", null);\r",
+									"    pm.expect(pm.response.json().type).not.to.eql(\"\", null);\r",
+									"    \r",
+									"});\r",
+									"\r",
+									"// Првоеряем, что ответ в поле message не содержит неожиланных данных\r",
+									"pm.test(\"В message не содержится не ожидаемый текст\", function () {\r",
+									"    pm.expect(pm.response.json().message).not.to.eql(\"user not logged in\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{petstoreurl}}store/order/{{currentOrderId}}",
+							"host": [
+								"{{petstoreurl}}store"
+							],
+							"path": [
+								"order",
+								"{{currentOrderId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.collectionVariables.set('randomOrderId', Math.floor(Math.random() * 9007199254740991));"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{randomUserId}},\r\n  \"username\": \"{{$randomUserName}}\",\r\n  \"firstName\": \"{{$randomFirstName}}\",\r\n  \"lastName\": \"{{$randomLastName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"phone\": \"{{$randomPhoneNumber}}\",\r\n  \"userStatus\": 0\r\n}"
+						},
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/user",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login (automated)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Позитивные сценарии\r",
+									"// Проверяем, что пришел успешный ответ на запрос\r",
+									"pm.test(\"Успешный ответ на запрос\", function () {\r",
+									"    pm.expect(pm.response.json().code).oneOf([200, 201, 202]);\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что отдался тип Unknown\r",
+									"pm.test(\"Тип корректный\", function() {\r",
+									"    pm.expect(pm.response.json().type).to.eql(\"unknown\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что в сообщении присутствует текст \"logged in user session\"\r",
+									"pm.test(\"Текст \\\"logged in user session\\\" присутсвует\", function() {\r",
+									"    pm.expect(pm.response.json().message).to.include(\"logged in user session\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем типы данных\r",
+									"pm.test(\"Типы данных корректные\", function() {\r",
+									"    pm.expect(pm.response.json().code).to.be.a(\"number\");\r",
+									"    pm.expect(pm.response.json().type).to.be.a(\"string\");\r",
+									"    pm.expect(pm.response.json().message).to.be.a(\"string\");\r",
+									"});\r",
+									"\r",
+									"// Негативные сценарии\r",
+									"// Проверяем, что ответ не 400 / 500\r",
+									"pm.test(\"Ответ не 400 и не 500\", function () {\r",
+									"    pm.response.to.not.have.status(400);\r",
+									"    pm.response.to.not.have.status(500);\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что в ответе нет поля логин (аналогичные проверки могут быть на любое поле из боди или иное)\r",
+									"pm.test(\"В ответе нет поля username\", function () {\r",
+									"    pm.expect(pm.response.json()).to.not.have.property(\"username\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что формат поля message - не number\r",
+									"pm.test(\"Поле message - не number\", function () {\r",
+									"    pm.expect(pm.response.json().message).not.to.be.a(\"number\");\r",
+									"});\r",
+									"\r",
+									"// Проверяем, что поля ответа непустые\r",
+									"pm.test(\"Поля не пустые и не отдают NULL\", function () {\r",
+									"    pm.expect(pm.response.json().message).not.to.eql(\"\", null);\r",
+									"    pm.expect(pm.response.json().code).not.to.eql(\"\", null);\r",
+									"    pm.expect(pm.response.json().type).not.to.eql(\"\", null);\r",
+									"    \r",
+									"});\r",
+									"\r",
+									"// Првоеряем, что ответ в поле message не содержит неожиланных данных\r",
+									"pm.test(\"В message не содержится не ожидаемый текст\", function () {\r",
+									"    pm.expect(pm.response.json().message).not.to.eql(\"user not logged in\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{$randomUserName}}\",\r\n  \"password\": \"{{$randomPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{petstoreurl}}user/login",
+							"host": [
+								"{{petstoreurl}}user"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.collectionVariables.set('randomUserId', \"{{$randomInt}}\");"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "petstoreurl",
+			"value": "https://petstore.swagger.io/v2/"
+		},
+		{
+			"key": "currentPetId",
+			"value": ""
+		},
+		{
+			"key": "randomNumber",
+			"value": ""
+		},
+		{
+			"key": "username",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "randomUserId",
+			"value": ""
+		},
+		{
+			"key": "randomOrderId",
+			"value": ""
+		},
+		{
+			"key": "currenPetId",
+			"value": ""
+		},
+		{
+			"key": "currentOrderId",
+			"value": ""
+		}
+	]
+}
